@@ -14,7 +14,6 @@ namespace RestSharpProject.Helpers
         // METHODS
         public RestRequest AddKeyAndToken(RestRequest request) 
         {
-            var key = _key;
             request.AddQueryParameter("key", _key);
             request.AddQueryParameter("token", _token);
             return request;
