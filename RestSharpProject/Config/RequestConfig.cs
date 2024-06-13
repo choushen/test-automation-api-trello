@@ -9,8 +9,8 @@ namespace RestSharpProject.Config
     {
 
         // PROPERTIES
-        public string PathToJson = "RestSharpProject/Resources/TrelloConfig.json";
-        private Dictionary<string, string> _configSelection;
+        public string PathToJson = "RestSharpProject/Config/TrelloConfig.json";
+        private Dictionary<string, string> _configSelection = new Dictionary<string, string>();
 
 
         // METHODS
@@ -18,7 +18,7 @@ namespace RestSharpProject.Config
         {
             try 
             {
-                var jsonString = File.ReadAllText(PathHelper.GetConfigFilePath(PathToJson));
+                var jsonString = File.ReadAllText(PathHelper.GetFilePath(PathToJson));
                 JObject jsonObject = JObject.Parse(jsonString);
 
                 // Handling case where the jsonObject is null

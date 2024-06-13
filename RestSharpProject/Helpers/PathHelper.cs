@@ -25,7 +25,7 @@ namespace RestSharpProject.Helpers
         } // GetProjectRootPath end
 
 
-        public static string GetConfigFilePath(string relativePath)
+        public static string GetFilePath(string relativePath)
         {
             var projectRootPath = GetProjectRootPath();
             return Path.Combine(projectRootPath, relativePath);

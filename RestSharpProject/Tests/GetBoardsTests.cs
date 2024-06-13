@@ -4,6 +4,8 @@ using NUnit.Framework;
 using RestSharp;
 using System;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using System.Diagnostics;
 
 namespace RestSharpProject.Tests
 {
@@ -17,6 +19,7 @@ namespace RestSharpProject.Tests
         private RestClient _client;
         private const string BaseUrl = "https://api.trello.com";
         private const int ExpectedStatusCode = 200;
+        private const string BaseSchemasFolderPath = "RestSharpProject/Resources/Schemas/";
 
 
         // HOOKS
@@ -55,14 +58,13 @@ namespace RestSharpProject.Tests
         public void VerifyGetBoards()
         {
             var membersConfig = _requestConfig.ConfigBuilder("members");
-
             var response = GetBoards(membersConfig["Member1"]);
-
-            JToken responseJson = JToken.Parse(response.Content);
-
-
-            TestContext.WriteLine($"Status: {(int)response.StatusCode} {response.StatusDescription}");
-
+            string schemaPath = PathHelper.GetFilePath("RestSharpProject/Resources/Schemas/GetBoardsSchema.json");
+            var jsonBoardsSchema = JSchema.Parse(File.ReadAllText(schemaPath));
+            var responseContent = JToken.Parse(response.Content);
+            // Validate the JSON response against the schema
+            Assert.True(responseContent.IsValid(jsonBoardsSchema), "The JSON response does not match the schema.");
+            // Validate the status code
             Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCode));
         } // VerifyGetMembersBoards end
 
@@ -71,11 +73,16 @@ namespace RestSharpProject.Tests
         public void VerifyGetBoard()
         {
             var boardsConfig = _requestConfig.ConfigBuilder("boards");
-
             var response = GetBoard(boardsConfig["APITesting"]);
-
             string boardName = JToken.Parse(response.Content).SelectToken("name").ToString();
-
+            string schemaPath = PathHelper.GetFilePath("RestSharpProject/Resources/Schemas/GetBoardSchema.json");
+            var jsonBoardSchema = JSchema.Parse(File.ReadAllText(schemaPath));
+            Debug.WriteLine(response.Content);
+            Debug.WriteLine(jsonBoardSchema);
+            var responseContent = JToken.Parse(response.Content);
+            // Validate the JSON response against the schema
+            Assert.True(responseContent.IsValid(jsonBoardSchema), "The JSON response does not match the schema.");
+            // Validate the status code
             Assert.That("API Testing", Is.EqualTo(boardName));
         } // VerifyGetBoard end
 
@@ -84,9 +91,13 @@ namespace RestSharpProject.Tests
         public void VerifyGetCards()
         {
             var listConfig = _requestConfig.ConfigBuilder("lists");
-
             var response = GetCards(listConfig["AwaitDeployFuncTest"]);
-
+            string schemaPath = PathHelper.GetFilePath("RestSharpProject/Resources/Schemas/GetCardsSchema.json");
+            var jsonCardSchema = JSchema.Parse(File.ReadAllText(schemaPath));
+            var responseContent = JToken.Parse(response.Content);
+            // Validate the JSON response against the schema
+            Assert.True(responseContent.IsValid(jsonCardSchema), "The JSON response does not match the schema.");
+            // Validate the status code
             Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCode));
         }
 
@@ -95,9 +106,15 @@ namespace RestSharpProject.Tests
         public void VerifyGetCard()
         {
             var cardConfig = _requestConfig.ConfigBuilder("cards");
-            var response = GetCard(cardConfig["IN001"]);
+            var response = GetCard(cardConfig["IN005"]);
             string cardName = JToken.Parse(response.Content).SelectToken("name").ToString();
-            Assert.That("IN-001: Flight Search Results Not Displaying Correctly on Mobile", Is.EqualTo(cardName));
+            string schemaPath = PathHelper.GetFilePath("RestSharpProject/Resources/Schemas/GetCardSchema.json");
+            var jsonCardSchema = JSchema.Parse(File.ReadAllText(schemaPath));
+            var responseContent = JToken.Parse(response.Content);
+            // Validate the JSON response against the schema
+            Assert.True(responseContent.IsValid(jsonCardSchema), "The JSON response does not match the schema.");
+            // Validate the status code
+            Assert.That("IN-005: 503 Service Unavailable Error Displayed When Trying to Checkout Flights to South Korea", Is.EqualTo(cardName));
         } // VerifyGetCards end
 
 
@@ -106,6 +123,12 @@ namespace RestSharpProject.Tests
         {
             var listsConfig = _requestConfig.ConfigBuilder("boards");
             var response = Getlists(listsConfig["APITesting"]);
+            var schemaPath = PathHelper.GetFilePath("RestSharpProject/Resources/Schemas/GetListsSchema.json");
+            var jsonListsSchema = JSchema.Parse(File.ReadAllText(schemaPath));
+            var responseContent = JToken.Parse(response.Content);
+            // Validate the JSON response against the schema
+            Assert.True(responseContent.IsValid(jsonListsSchema), "The JSON response does not match the schema.");
+            // Validate the status code
             Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCode));
         } // VerifyGetLists end
 
@@ -113,7 +136,7 @@ namespace RestSharpProject.Tests
         // SERVICES
         private RestResponse GetBoards(string membersId)
         {    
-            var request = new RestRequest($"1/members/{membersId}/boards"); 
+            var request = new RestRequest($"1/members/{membersId}/boards").AddQueryParameter("fields", "id,name"); 
             request = _authHelper.AddKeyAndToken(request);
             return _client.Get(request);
         } // GetBoards end
@@ -121,7 +144,8 @@ namespace RestSharpProject.Tests
 
         private RestResponse GetBoard(string boardId)
         {
-            var request = new RestRequest($"1/boards/{boardId}");
+            var request = new RestRequest($"1/boards/{boardId}")
+            .AddQueryParameter("fields", "id,name");
             request = _authHelper.AddKeyAndToken(request);
             return _client.Get(request);
         } // GetBoard end
@@ -129,7 +153,8 @@ namespace RestSharpProject.Tests
         
         private RestResponse GetCards(string listId)
         {
-            var request = new RestRequest($"1/lists/{listId}/cards");
+            var request = new RestRequest($"1/lists/{listId}/cards")
+            .AddQueryParameter("fields", "id,name,desc");
             request = _authHelper.AddKeyAndToken(request);
             return _client.Get(request);
         } // GetCards end
@@ -137,14 +162,16 @@ namespace RestSharpProject.Tests
         
         private RestResponse GetCard(string cardId)
         {
-            var request = new RestRequest($"1/cards/{cardId}");
+            var request = new RestRequest($"1/cards/{cardId}")
+            .AddQueryParameter("fields", "id,name,desc");
             request = _authHelper.AddKeyAndToken(request);
             return _client.Get(request);
         } // GetCard end
 
         private RestResponse Getlists(string boardId)
         {
-            var request = new RestRequest($"/1/boards/{boardId}/lists");
+            var request = new RestRequest($"/1/boards/{boardId}/lists")
+            .AddQueryParameter("fields", "id,name");
             request = _authHelper.AddKeyAndToken(request);
             return _client.Get(request);
         } // GetLists end
