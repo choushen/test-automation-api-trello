@@ -10,7 +10,7 @@ using System.Diagnostics;
 namespace RestSharpProject.Tests
 {
     [TestFixture]
-    public class TrelloApiTests
+    public class GetBoardsTests
     {
 
         // PROPERTIES
@@ -18,7 +18,7 @@ namespace RestSharpProject.Tests
         private RequestConfig _requestConfig;
         private RestClient _client;
         private const string BaseUrl = "https://api.trello.com";
-        private const int ExpectedStatusCode = 200;
+        private const int ExpectedStatusCodeGoodRequest = 200;
         private const string BaseSchemasFolderPath = "RestSharpProject/Resources/Schemas/";
 
 
@@ -65,7 +65,7 @@ namespace RestSharpProject.Tests
             // Validate the JSON response against the schema
             Assert.True(responseContent.IsValid(jsonBoardsSchema), "The JSON response does not match the schema.");
             // Validate the status code
-            Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCode));
+            Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCodeGoodRequest));
         } // VerifyGetMembersBoards end
 
 
@@ -98,7 +98,7 @@ namespace RestSharpProject.Tests
             // Validate the JSON response against the schema
             Assert.True(responseContent.IsValid(jsonCardSchema), "The JSON response does not match the schema.");
             // Validate the status code
-            Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCode));
+            Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCodeGoodRequest));
         }
 
 
@@ -129,12 +129,12 @@ namespace RestSharpProject.Tests
             // Validate the JSON response against the schema
             Assert.True(responseContent.IsValid(jsonListsSchema), "The JSON response does not match the schema.");
             // Validate the status code
-            Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCode));
+            Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCodeGoodRequest));
         } // VerifyGetLists end
 
         
         // SERVICES
-        private RestResponse GetBoards(string membersId)
+        internal RestResponse GetBoards(string membersId)
         {    
             var request = new RestRequest($"1/members/{membersId}/boards").AddQueryParameter("fields", "id,name"); 
             request = _authHelper.AddKeyAndToken(request);
@@ -142,7 +142,7 @@ namespace RestSharpProject.Tests
         } // GetBoards end
 
 
-        private RestResponse GetBoard(string boardId)
+        internal RestResponse GetBoard(string boardId)
         {
             var request = new RestRequest($"1/boards/{boardId}")
             .AddQueryParameter("fields", "id,name");
@@ -151,7 +151,7 @@ namespace RestSharpProject.Tests
         } // GetBoard end
 
         
-        private RestResponse GetCards(string listId)
+        internal RestResponse GetCards(string listId)
         {
             var request = new RestRequest($"1/lists/{listId}/cards")
             .AddQueryParameter("fields", "id,name,desc");
@@ -160,7 +160,7 @@ namespace RestSharpProject.Tests
         } // GetCards end
 
         
-        private RestResponse GetCard(string cardId)
+        internal RestResponse GetCard(string cardId)
         {
             var request = new RestRequest($"1/cards/{cardId}")
             .AddQueryParameter("fields", "id,name,desc");
@@ -168,7 +168,7 @@ namespace RestSharpProject.Tests
             return _client.Get(request);
         } // GetCard end
 
-        private RestResponse Getlists(string boardId)
+        internal RestResponse Getlists(string boardId)
         {
             var request = new RestRequest($"/1/boards/{boardId}/lists")
             .AddQueryParameter("fields", "id,name");
