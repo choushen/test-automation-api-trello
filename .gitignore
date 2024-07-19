@@ -148,3 +148,5 @@ TestResults/
 .DS_Store
 RestSharpProject/Config/TrelloConfig.json
 Postman/Trello Test.postman_collection.json
+Config/TrelloConfig.json
+other-stuff/Postman/Trello Test.postman_collection.json
