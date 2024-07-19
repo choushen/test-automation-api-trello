@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using RestSharpProject.Helpers;
 
 namespace RestSharpProject.Config
@@ -11,6 +12,8 @@ namespace RestSharpProject.Config
         // PROPERTIES
         public string PathToJson = "RestSharpProject/Config/TrelloConfig.json";
         private Dictionary<string, string> _configSelection = new Dictionary<string, string>();
+        public const string BaseUrl = "https://api.trello.com";
+
 
 
         // METHODS
@@ -32,7 +35,8 @@ namespace RestSharpProject.Config
                 Debug.WriteLine($"Error: {e.Message}");
                 throw;
             }
-        } // ConfigBuilder end     
+        } // ConfigBuilder end   
+ 
 
     }
 }
