@@ -1,6 +1,16 @@
 # RestSharpProject
 This project is a simple example of how to use RestSharp to make API calls to the Trello API. The project is written in C# and uses the NUnit testing framework to run tests against the API.
 
+
+## Work in Progress
+This project is a work in progress. Here are some things I need to do:
+
+- **Configure Unit Test Runner**: Ensure the unit test runner is properly configured for seamless test execution.
+- **Integrate PostgreSQL Database**: Set up a PostgreSQL database to manage and utilize test data effectively.
+- **Dockerize the Suite**: Containerize the testing suite using Docker for consistent and isolated test environments.
+- **Build a CI/CD Pipeline**: Implement a continuous integration and continuous deployment (CI/CD) pipeline to automate testing and deployment processes.
+
+
 ## Project Structure
 The project is structured as follows:
 ```
@@ -65,3 +75,7 @@ If you are building the project on a mac, you may need to do some additional set
 - [Email](jacob.mckenzie@icloud.com)
 - [LinkedIn](https://www.linkedin.com/in/jacob-mckenzie-0888a7175/)
 - [GitHub](https://github.com/choushen)
+
+## Disclaimer
+
+> **Disclaimer:** This project is under active development. The current state of the project is not representative of the final idea. Contributions and suggestions are welcome.
