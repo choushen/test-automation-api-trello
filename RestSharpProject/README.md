@@ -1,6 +1,31 @@
 # RestSharpProject
 This project is a simple example of how to use RestSharp to make API calls to the Trello API. The project is written in C# and uses the NUnit testing framework to run tests against the API.
 
+## Project Structure
+The project is structured as follows:
+```
+RestSharpProject
+│
+├── Config
+│
+├── Helpers
+│
+├── Requests
+│
+├── Resources
+│   └── Schemas
+│
+├── Features
+│
+├── Steps
+│
+├── Hooks
+|
+├── README.md
+├── RestSharpProject.csproj
+└── RestSharpProject.sln
+```
+
 
 ## Prerequisites
 - [.NET Core SDK](https://dotnet.microsoft.com/download)
