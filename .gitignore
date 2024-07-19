@@ -146,3 +146,5 @@ TestResults/
 
 # Ignore Mac generated files
 .DS_Store
+RestSharpProject/Config/TrelloConfig.json
+Postman/Trello Test.postman_collection.json

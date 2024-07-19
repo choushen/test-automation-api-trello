@@ -80,6 +80,35 @@ namespace RestSharpProject.Tests
             Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCodeUnauthorized));
         } // VerifyGetBoardsNoAuth end
 
+
+        [Test]
+        public void VerifyGetCardInvalidId()
+        {
+
+            var request = new RestRequest($"1/cards/InvalidId", Method.Get)
+            .AddQueryParameter("fields", "id,name,desc");
+            _authHelper.AddKeyAndToken(request);
+
+            var response = _client.Execute(request);
+
+            // Validate the JSON response against the schema
+            // Validate the status code
+            Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCodeBadRequest));
+        }
+
+        [Test]
+        public void VerifyGetCardNoAuth()
+        {
+            var cardConfig = _requestConfig.ConfigBuilder("cards");
+            var request = new RestRequest($"1/cards/{cardConfig["IN005"]}", Method.Get)
+            .AddQueryParameter("fields", "id,name,desc");
+
+            var response = _client.Execute(request);
+
+            // Validate the JSON response against the schema
+            // Validate the status code
+            Assert.That((int)response.StatusCode, Is.EqualTo(ExpectedStatusCodeUnauthorized));
+        }
     
 
     }
